@@ -1,8 +1,8 @@
 const API_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:8000";
+  import.meta.env.VITE_API_URL || "http://127.0.0.1:8002";
 
 export async function investigateGPU(gpu, symptoms) {
-  const response = await fetch(${API_URL}/api/investigate, {
+  const response = await fetch(`${API_URL}/api/investigate`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -15,9 +15,8 @@ export async function investigateGPU(gpu, symptoms) {
   });
 
   if (!response.ok) {
-    throw new Error(
-      Investigation failed: HTTP ${response.status}
-    );
+    const message = await response.text();
+    throw new Error(`Investigation failed (${response.status}): ${message}`);
   }
 
   const data = await response.json();
