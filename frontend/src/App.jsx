@@ -1,45 +1,50 @@
 import { useState } from "react";
+import { investigateGPU } from "./api";
 import "./App.css";
 
-const demoInvestigation = {
-  gpu_id: "GPU-001",
-  status: "suspected_fault",
-  suspected_causes: ["overheating"],
-  tests_completed: ["thermal_test"],
-  total_test_cost: 1,
-  investigation_history: [
-    {
-      step: 1,
-      ai_selected_test: "thermal_test",
-      ai_reason:
-        "High temperature suggests a possible thermal issue. Run a thermal diagnostic first.",
-      test_result: {
-        result: "abnormal",
-        measurement: {
-          temperature_c: 92,
-          thermal_throttling: true,
-        },
-        test_cost: 1,
-      },
-    },
-  ],
-};
 
 function App() {
   const [investigation, setInvestigation] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  function startDemo() {
-    setLoading(true);
-    setInvestigation(null);
+async function startDemo() {
+  setLoading(true);
+  setInvestigation(null);
+  setError("");
+try {
+const gpu = {
+  gpu_id: "GPU-004",
+  temperature_c: 55,
+  memory_usage_percent: 40,
+  gpu_utilization_percent: 65,
+  network_latency_ms: 2.5,
+};
 
-    // Demonstration only; real API integration comes next.
-    setInvestigation(demoInvestigation);
+const symptoms = {
+  high_temperature: false,
+  high_memory_usage: false,
+  slow_network: false,
+  low_gpu_utilization: false,
+};
+
+    const result = await investigateGPU(gpu, symptoms);
+    setInvestigation(result);
+  } catch (error) {
+    console.error("Investigation failed:", error);
+    setError(error.message || "Investigation failed. Please try again.");
+  } finally {
     setLoading(false);
   }
+}
 
   return (
     <div className="dashboard">
+      {error && (
+  <div role="alert" className="error-message">
+    {error}
+  </div>
+)}
       <header className="header">
         <div>
           <p className="eyebrow">NVIDIA × NEBIUS AI HACKATHON</p>
@@ -97,7 +102,9 @@ function App() {
 
               <p>
                 <strong>Suspected Root Cause:</strong>{" "}
-                {investigation.suspected_causes.join(", ")}
+                {investigation.suspected_causes?.length > 0
+  ? investigation.suspected_causes.join(", ")
+  : "No fault detected"}
               </p>
 
               <p className="disclaimer">

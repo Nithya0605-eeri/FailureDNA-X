@@ -224,3 +224,15 @@ __marimo__/
 !.env.example
 .venv/
 _pycache_/
+
+# Frontend dependencies
+node_modules/
+frontend/node_modules/
+
+# Frontend build output
+frontend/dist/
+
+# Local environment files
+.env
+.env.*
+!.env.example
