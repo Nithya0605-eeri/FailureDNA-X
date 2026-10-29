@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from backend.sim_routes1 import router as sim_router
 
 from backend.investigation_routes import router as investigation_router
 
@@ -14,6 +15,7 @@ app.add_middleware(
 )
 
 app.include_router(investigation_router)
+app.include_router(sim_router)
 
 
 @app.get("/health")
