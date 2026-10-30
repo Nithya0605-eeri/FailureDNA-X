@@ -1,5 +1,5 @@
 const API_URL =
-  import.meta.env.VITE_API_URL || "http://127.0.0.1:8002";
+  import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 
 export async function investigateGPU(gpu, symptoms) {
   const response = await fetch(`${API_URL}/api/investigate`, {

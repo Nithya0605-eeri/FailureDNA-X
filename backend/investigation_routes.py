@@ -35,8 +35,10 @@ def investigate(request: InvestigationRequest):
             "investigation": result,
         }
 
-    except Exception:
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
         raise HTTPException(
             status_code=500,
-            detail="AI investigation failed. Check backend logs."
-        )
+            detail="AI investigation failed. Check backend logs.",
+        ) from e
